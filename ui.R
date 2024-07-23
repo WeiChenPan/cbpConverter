@@ -1,15 +1,14 @@
 #----------------------------------------------------------------------------------------------------------
 ### App: cbpConverter
 # File name: ui.R
-# Version: 1.0
+# Version: 2.0
 # Description: create the shiny application user interface.
 
 
 # Author: Pan, Wei-Chen
 # Created: 2024-06-14
-# Last Updated: 2024-06-19
+# Last Updated: 2024-07-23
 #----------------------------------------------------------------------------------------------------------
-
 library(shiny)
 library(shinydashboard)
 library(DT)
@@ -126,12 +125,13 @@ ui <- dashboardPage(
                   sidebarPanel(
                     fileInput("fileInput_patient", "Choose Excel File", accept = ".xlsx"),
                     uiOutput("columnSelector_patient"),
-                    p(style = "color: red", "Note: PATIENT_ID (required): a unique patient ID."),
-                    uiOutput("dynamicInputs_patient"),  # Dynamic inputs for long headers and type
-                    downloadButton("downloadBtn_patient", "Download TXT File")
+                    downloadButton("downloadBtn_patient", "Download TXT File"),
+                    p(class = "margin-top-10", style = "color: red", "Note: PATIENT_ID (required): a unique patient ID."),
+                    uiOutput("dynamicInputs_patient")  # Dynamic inputs for long headers and type
                   ),
                   mainPanel(
-                    div(style = 'overflow-x: auto; overflow-y: auto; height: 400px;', tableOutput("preview_patient"))  # Enable scrolling
+                    uiOutput("dynamicInputs_event"),
+                    div(style = 'overflow-x: auto; overflow-y: auto; height: 400px;', DTOutput("preview_patient"))  # Enable scrolling
                   )
                 ),
                 tags$style(HTML("
@@ -162,12 +162,13 @@ ui <- dashboardPage(
                     fileInput("fileInput_sample", "Choose Excel File", accept = ".xlsx"),
                     uiOutput("selectDeselectAll_sample"),  # Select or deselect all options
                     uiOutput("columnSelector_sample"),
-                    p(style = "color: red", "Note:", br(), "1.PATIENT_ID (required): a unique patient ID", br(), "2.SAMPLE_ID (required): a unique sample ID."),
-                    uiOutput("dynamicInputs_sample"),   # Dynamic inputs for long headers and type
-                    downloadButton("downloadBtn_sample", "Download TXT File")
+                    downloadButton("downloadBtn_sample", "Download TXT File"),
+                    p(class = "margin-top-10", style = "color: red", "Note:", br(), "1.PATIENT_ID (required): a unique patient ID", br(), "2.SAMPLE_ID (required): a unique sample ID."),
+                    uiOutput("dynamicInputs_sample")   # Dynamic inputs for long headers and type
                   ),
                   mainPanel(
-                    div(style = 'overflow-x: auto; overflow-y: auto; height: 400px;', tableOutput("preview_sample"))  # Enable scrolling
+                    uiOutput("dynamicInputs_event"),
+                    div(style = 'overflow-x: auto; overflow-y: auto; height: 400px;', DTOutput("preview_sample")) # Enable scrolling
                   )
                 ),
                 tags$style(HTML("
@@ -217,12 +218,13 @@ ui <- dashboardPage(
                     uiOutput("columnSelector_EventType"),  
                     # Select STYLE_SHAPE
                     checkboxGroupInput("style_shape_selector", "Select STYLE_SHAPE", choices = c("Circle", "Square", "Triangle", "Diamond", "Star", "Camera"), inline = TRUE),
-                    checkboxInput("add_text_checkbox", "Add Text Column"),
                     # Give a checkbox of STYLE_COLOR and fill in
+                    checkboxInput("add_text_column", HTML("<b>STYLE_COLOR</b>"), value = FALSE),
                     conditionalPanel(
-                      condition = "input.add_text_checkbox == true",
-                      textInput("STYLE_COLOR", "")
-                    ),
+                      condition = "input.add_text_column == true",
+                      textInput("custom_text", "Enter Custom Text", value = "")
+                    ),  
+                    uiOutput("column_remover"),
                     downloadButton("downloadBtn_timeline", "Download TXT File")
                   ),
                   mainPanel(

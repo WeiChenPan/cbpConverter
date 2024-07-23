@@ -1,15 +1,14 @@
 #-----------------------------------------------------------------------------------------------
 ### App: cbpConverter
 # File name: server.R
-# Version: 1.0
+# Version: 2.0
 # Description: create the shiny application server.
 
 
 # Author: Pan, Wei-Chen
 # Created: 2024-06-14
-# Last Updated: 2024-06-19
+# Last Updated: 2024-07-23
 #------------------------------------------------------------------------------------------------
-
 library(shiny)
 library(shinydashboard)
 library(DT)
@@ -248,11 +247,12 @@ server <- function(input, output, session) {
     do.call(tagList, myUI_patient)
   })
   
-  output$preview_patient <- renderTable({
+  output$preview_patient <- renderDT({
     req(data_patient())
     if (is.null(input$selectedCols_patient))
       return()
-    data_patient()[, input$selectedCols_patient, drop = FALSE]
+    datatable(data_patient()[, input$selectedCols_patient, drop = FALSE], 
+      options = list(pageLength = 10, scrollX = TRUE, scrollY = "400px"))
   })
   
   output$downloadBtn_patient <- downloadHandler(
@@ -274,8 +274,12 @@ server <- function(input, output, session) {
       combined.df.patient <- rbind(df.patient[1:4, ], rename.header.patient, df.patient[5:nrow(df.patient), ])
       
       write.table(combined.df.patient, file, sep = "\t", col.names = FALSE, row.names = FALSE, quote = FALSE)
-    }
-  )
+    })
+  
+  # UI to display the combined dataframe
+  output$dynamicInputs_event <- renderUI({
+    DTOutput("preview_patient")
+  })
   #----------------------------------------------------------------------------------------------
   
   ## Data_clinical_sample
@@ -358,11 +362,12 @@ server <- function(input, output, session) {
     do.call(tagList, myUI_sample)
   })
   
-  output$preview_sample <- renderTable({
+  output$preview_sample <- renderDT({
     req(data_sample())
     if (is.null(input$selectedCols_sample))
       return()
-    data_sample()[, input$selectedCols_sample, drop = FALSE]
+    datatable(data_sample()[, input$selectedCols_sample, drop = FALSE], 
+      options = list(pageLength = 10, scrollX = TRUE, scrollY = "400px"))
   })
   
   output$downloadBtn_sample <- downloadHandler(
@@ -384,8 +389,12 @@ server <- function(input, output, session) {
       combined.df.sample <- rbind(df.sample[1:4, ], rename.header.sample, df.sample[5:nrow(df.sample), ])
       
       write.table(combined.df.sample, file, sep = "\t", col.names = FALSE, row.names = FALSE, quote = FALSE)
-    }
-  )
+    })
+  
+  # UI to display the combined dataframe
+  output$dynamicInputs_event <- renderUI({
+    DTOutput("preview_sample")
+  })
   #----------------------------------------------------------------------------------------------
   
   ## Meta_timeline
@@ -432,16 +441,23 @@ server <- function(input, output, session) {
   # Reactive value to store unique event types
   event_types <- reactiveVal(NULL)
   
+  # Reactive value to store the columns
+  original_columns <- reactiveVal(NULL)
+  removed_columns <- reactiveVal(c())
+  
   observe({
     file_time <- input$fileInput_timeline
     if (is.null(file_time))
       return()
     
-    
+    # Read the timeline table
     df.t <- read_excel(file_time$datapath, col_names = TRUE)
     
-    # Split the dataframe into 4 smaller dataframes
-    n <- ceiling(nrow(df.t) / 6)
+    # Store the original columns
+    original_columns(names(df.t))
+    
+    # Split the dataframe into smaller dataframes
+    n <- ceiling(nrow(df.t) / 6 )
     df.list <- split(df.t, rep(1:6, each = n, length.out = nrow(df.t)))
     
     # Store the list of smaller dataframes in reactive value
@@ -449,31 +465,37 @@ server <- function(input, output, session) {
     
     # Store unique event types in reactive value
     event_types(unique(df.t$EVENT_TYPE))
-  })
+    
+    # Generate the column remover UI
+    output$column_remover <- renderUI({
+      checkboxGroupInput("remove_columns", "Remove Columns", choices = original_columns())
+    })
+  })  
   
+  # Observe input from checkbox and text input for new column
+  observe({
+    df.list <- data_time_list()
+    
+    if (input$add_text_column) {
+      req(input$custom_text)
+      df.list <- lapply(df.list, function(df) {
+        df$STYLE_COLOR <- input$custom_text
+        df
+      })
+    } else {
+      df.list <- lapply(df.list, function(df) {
+        df$STYLE_COLOR <- NULL
+        df
+      })
+    }
+    data_time_list(df.list)
+  })
   
   # Checkbox of "EVENT_TYPE"
   output$columnSelector_EventType <- renderUI({
     req(event_types())
     checkboxGroupInput("selectedRows_Event", "Select Event Types", choices = event_types(), inline = TRUE)
   })
-  
-  # Render the table based on selected event types
-  output$preview_timeline <- renderDT({
-    req(data_time_list())
-    req(input$selectedRows_Event)
-    req(input$dataframe_selector)
-    
-    df.list <- data_time_list()
-    selected_events <- input$selectedRows_Event
-    
-    # Filter the dataframe based on selected event types
-    filtered_df <- df[df$EVENT_TYPE %in% selected_events, ]
-    
-    # Return the filtered dataframe
-    datatable(filtered_df, options = list(pageLength = 10, scrollX = TRUE, scrollY = "400px"))
-  })
-  
   
   # Combine filtered dataframes from all parts
   combined_data <- reactive({
@@ -496,21 +518,18 @@ server <- function(input, output, session) {
       combined_df$STYLE_SHAPE <- input$style_shape_selector
     }
     
-    # Add the text column if the checkbox is checked and text is entered
-    if (input$add_text_checkbox && !is.null(input$text_input) && input$text_input != "") {
-      combined_df$TEXT_COLUMN <- input$text_input
+    # Remove selected columns
+    if (!is.null(input$remove_columns)) {
+      combined_df <- combined_df[, !names(combined_df) %in% input$remove_columns, drop = FALSE]
     }
-    
     
     # Return the combined dataframe
     combined_df
   })
   
-  
-  output$combined_data <- renderDT({
+  output$preview_timeline <- renderDT({
     datatable(combined_data(), options = list(pageLength = 10, scrollX = TRUE, scrollY = "400px"))
   })
-  
   
   # Download handler for combined data as txt file
   output$downloadBtn_timeline <- downloadHandler(
@@ -522,13 +541,10 @@ server <- function(input, output, session) {
   
   # UI to display the combined dataframe
   output$dynamicInputs_event <- renderUI({
-    DTOutput("combined_data")
+    DTOutput("preview_timeline")
   })
-    
+  
 }
-
-
 
 # Return the server function
 shinyServer(server)
-
