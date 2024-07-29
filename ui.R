@@ -197,7 +197,7 @@ ui <- dashboardPage(
                 sidebarLayout(
                   sidebarPanel(
                     textInput("data_filename", "Data Filename", value = ""),
-                    p(style = "color: red", "*format: data_timeline_xxx.txt"),
+                    p(style = "color: red", "*format: xxx means EVENT_TYPE !"),
                     downloadButton("downloadBtn_meta_timeline", "Download TXT File")
                   ),
                   mainPanel(

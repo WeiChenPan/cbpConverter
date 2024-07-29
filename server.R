@@ -403,7 +403,7 @@ server <- function(input, output, session) {
       cancer_study_identifier = input$cancer_study_identifier,
       genetic_alteration_type = "CLINICAL",
       datatype = "TIMELINE",
-      data_filename = "meta_timeline_xxx.txt"
+      data_filename = "data_timeline_xxx.txt"
     )
   })
   
