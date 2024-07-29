@@ -7,7 +7,7 @@
 
 # Author: Pan, Wei-Chen
 # Created: 2024-06-14
-# Last Updated: 2024-07-23
+# Last Updated: 2024-07-29
 #------------------------------------------------------------------------------------------------
 library(shiny)
 library(shinydashboard)
@@ -403,7 +403,7 @@ server <- function(input, output, session) {
       cancer_study_identifier = input$cancer_study_identifier,
       genetic_alteration_type = "CLINICAL",
       datatype = "TIMELINE",
-      data_filename = "data_timeline_xxx.txt"
+      meta_data_filename = input$meta_data_filename
     )
   })
   
@@ -413,7 +413,7 @@ server <- function(input, output, session) {
       paste0("cancer_study_identifier: ", data_meta_timeline$cancer_study_identifier),
       paste0("genetic_alteration_type: ", data_meta_timeline$genetic_alteration_type),
       paste0("datatype: ", data_meta_timeline$datatype),
-      paste0("data_filename: ", data_meta_timeline$data_filename),
+      paste0("meta_data_filename: ", data_meta_timeline$meta_data_filename),
       sep = "\n"
     )
   })
@@ -426,7 +426,7 @@ server <- function(input, output, session) {
         paste0("cancer_study_identifier: ", data_meta_timeline$cancer_study_identifier),
         paste0("genetic_alteration_type: ", data_meta_timeline$genetic_alteration_type),
         paste0("datatype: ", data_meta_timeline$datatype),
-        paste0("data_filename: ", data_meta_timeline$data_filename),
+        paste0("meta_data_filename: ", data_meta_timeline$meta_data_filename),
         sep = "\n"
       )
       writeLines(content_meta_timeline, file)

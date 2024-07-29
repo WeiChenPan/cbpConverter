@@ -7,7 +7,7 @@
 
 # Author: Pan, Wei-Chen
 # Created: 2024-06-14
-# Last Updated: 2024-07-23
+# Last Updated: 2024-07-29
 #----------------------------------------------------------------------------------------------------------
 library(shiny)
 library(shinydashboard)
@@ -196,8 +196,8 @@ ui <- dashboardPage(
               fluidPage(
                 sidebarLayout(
                   sidebarPanel(
-                    textInput("data_filename", "Data Filename", value = ""),
-                    p(style = "color: red", "*format: xxx means EVENT_TYPE !"),
+                    textInput("meta_data_filename", "Data Filename", value = "data_timeline_xxx.txt"),
+                    p(style = "color: red", "*xxx means EVENT_TYPE !"),
                     downloadButton("downloadBtn_meta_timeline", "Download TXT File")
                   ),
                   mainPanel(
