@@ -7,7 +7,7 @@
 
 # Author: Pan, Wei-Chen
 # Created: 2024-06-14
-# Last Updated: 2024-07-29
+# Last Updated: 2024-07-31
 #------------------------------------------------------------------------------------------------
 library(shiny)
 library(shinydashboard)
@@ -239,20 +239,48 @@ server <- function(input, output, session) {
     req(cols_patient)
     
     myUI_patient <- lapply(cols_patient, function(col) {
-      div(class = "inline",
-          div(checkboxInput(inputId = paste0("col_patient_", col), label = col, value = TRUE)),
-          div(class = "small-label", textInput(paste0("renameHeader_patient_", col), "Header", col))
-      )
+      # Check if the third row for the column is NUMBER
+      if (data_patient()[3, col] == "NUMBER") {
+        div(class = "inline",
+            div(checkboxInput(inputId = paste0("col_patient_", col), label = col, value = TRUE)),
+            div(class = "small-label", textInput(paste0("renameHeader_patient_", col), "Header", col)),
+            div(class = "small-label", selectInput(paste0("decimal_patient_", col), "Decimals", choices = 0:6))
+        )
+      } else {
+        div(class = "inline",
+            div(checkboxInput(inputId = paste0("col_patient_", col), label = col, value = TRUE)),
+            div(class = "small-label", textInput(paste0("renameHeader_patient_", col), "Header", col))
+        )
+      }
     })
+    
     do.call(tagList, myUI_patient)
   })
   
   output$preview_patient <- renderDT({
     req(data_patient())
-    if (is.null(input$selectedCols_patient))
-      return()
-    datatable(data_patient()[, input$selectedCols_patient, drop = FALSE], 
-      options = list(pageLength = 10, scrollX = TRUE, scrollY = "400px"))
+    if (is.null(input$selectedCols_patient)) return()
+    
+    df.patient <- data_patient()[, input$selectedCols_patient, drop = FALSE]
+    
+    # Adjust decimals if specified, but only for data rows (rows 5 and onward)
+    for (col in input$selectedCols_patient) {
+      if (!is.null(input[[paste0("decimal_patient_", col)]])) {
+        num.decimals.p <- as.numeric(input[[paste0("decimal_patient_", col)]])
+        df.patient[5:nrow(df.patient), col] <- sapply(df.patient[5:nrow(df.patient), col], function(x) {
+          if (is.list(x)) {
+            # Handle list elements appropriately, possibly flattening them
+            x <- unlist(x)
+          }
+          if (is.character(x)) {
+            x <- as.numeric(x)
+          }
+          return(format(round(x, num.decimals.p), nsmall = num.decimals.p))
+        })
+      }
+    }
+    
+    datatable(df.patient, options = list(pageLength = 10, scrollX = TRUE, scrollY = "400px"))
   })
   
   output$downloadBtn_patient <- downloadHandler(
@@ -262,24 +290,35 @@ server <- function(input, output, session) {
       selected.cols.patient <- input$selectedCols_patient
       df.patient <- data_patient()[, selected.cols.patient, drop = FALSE]
       
-      # Rename headers (Row 5)
+      # Rename headers (Row 5 in the output file)
       rename.header.patient <- sapply(selected.cols.patient, function(col) input[[paste0("renameHeader_patient_", col)]])
       
-      # Add "#" in front of the characters (first 4 rows) !!
+      # Add "#" in front of the characters (first 4 rows)
       df.patient[1, 1] <- paste0("#", df.patient[1, 1])
       df.patient[2, 1] <- paste0("#", df.patient[2, 1])
       df.patient[3, 1] <- paste0("#", df.patient[3, 1])
       df.patient[4, 1] <- paste0("#", df.patient[4, 1])
       
+      # Adjust decimals if specified, but only for data rows (rows 5 and onward)
+      for (col in selected.cols.patient) {
+        if (!is.null(input[[paste0("decimal_patient_", col)]])) {
+          num.decimals.p <- as.numeric(input[[paste0("decimal_patient_", col)]])
+          df.patient[5:nrow(df.patient), col] <- sapply(df.patient[5:nrow(df.patient), col], function(x) {
+            if (is.list(x)) {
+              x <- unlist(x)
+            }
+            if (is.character(x)) {
+              x <- as.numeric(x)
+            }
+            return(format(round(x, num.decimals.p), nsmall = num.decimals.p))
+          })
+        }
+      }
+      
       combined.df.patient <- rbind(df.patient[1:4, ], rename.header.patient, df.patient[5:nrow(df.patient), ])
       
       write.table(combined.df.patient, file, sep = "\t", col.names = FALSE, row.names = FALSE, quote = FALSE)
     })
-  
-  # UI to display the combined dataframe
-  output$dynamicInputs_event <- renderUI({
-    DTOutput("preview_patient")
-  })
   #----------------------------------------------------------------------------------------------
   
   ## Data_clinical_sample
@@ -335,6 +374,7 @@ server <- function(input, output, session) {
   output$columnSelector_sample <- renderUI({
     req(data_sample())
     
+    
     # Define the observeEvent for the select all checkbox
     observeEvent(input$selectAll_sample, {
       if (input$selectAll_sample) {
@@ -353,31 +393,52 @@ server <- function(input, output, session) {
     cols_sample <- input$selectedCols_sample
     req(cols_sample)
     
+    
     myUI_sample <- lapply(cols_sample, function(col) {
-      div(class = "inline",
-          div(checkboxInput(inputId = paste0("col_sample_", col), label = col, value = TRUE)),
-          div(class = "small-label", textInput(paste0("renameHeader_sample_", col), "Header", col))
-      )
+      # Check if the third row for the column is NUMBER
+      if (data_sample()[3, col] == "NUMBER") {
+        div(class = "inline",
+            div(checkboxInput(inputId = paste0("col_sample_", col), label = col, value = TRUE)),
+            div(class = "small-label", textInput(paste0("renameHeader_sample_", col), "Header", col)),
+            div(class = "small-label", selectInput(paste0("decimal_sample_", col), "Decimals", choices = 0:6))
+        )
+      } else {
+        div(class = "inline",
+            div(checkboxInput(inputId = paste0("col_sample_", col), label = col, value = TRUE)),
+            div(class = "small-label", textInput(paste0("renameHeader_sample_", col), "Header", col))
+        )
+      }
     })
     do.call(tagList, myUI_sample)
   })
   
   output$preview_sample <- renderDT({
     req(data_sample())
-    if (is.null(input$selectedCols_sample))
-      return()
-    datatable(data_sample()[, input$selectedCols_sample, drop = FALSE], 
-      options = list(pageLength = 10, scrollX = TRUE, scrollY = "400px"))
+    if (is.null(input$selectedCols_sample)) return()
+    
+    df.sample <- data_sample()[, input$selectedCols_sample, drop = FALSE]
+    
+    # Adjust decimals if specified, but only for data rows (rows 6 and onward)
+    for (col in input$selectedCols_sample) {
+      if (!is.null(input[[paste0("decimal_sample_", col)]])) {
+        num.decimals <- as.numeric(input[[paste0("decimal_sample_", col)]])
+        df.sample[5:nrow(df.sample), col] <- as.character(format(round(as.numeric(df.sample[5:nrow(df.sample), col]), num.decimals), nsmall = num.decimals))
+      }
+    }
+    
+    datatable(df.sample, options = list(pageLength = 10, scrollX = TRUE, scrollY = "400px"))
   })
   
+  
+  # Download handler needs to incorporate the decimal adjustment
   output$downloadBtn_sample <- downloadHandler(
     filename = function() {"data_clinical_sample.txt"},
     content = function(file) {
       req(data_sample())
       selected.cols.sample <- input$selectedCols_sample
       df.sample <- data_sample()[, selected.cols.sample, drop = FALSE]
-      
-      # Rename headers (Row 5)
+     
+      # Rename headers (Row 5 in output file)
       rename.header.sample <- sapply(selected.cols.sample, function(col) input[[paste0("renameHeader_sample_", col)]])
       
       # Add "#" in front of the characters (first 4 rows) !!
@@ -386,15 +447,21 @@ server <- function(input, output, session) {
       df.sample[3, 1] <- paste0("#", df.sample[3, 1])
       df.sample[4, 1] <- paste0("#", df.sample[4, 1])
       
+      
+      # Adjust decimals if specified, but only for data rows (rows 5 and onward)
+      for (col in selected.cols.sample) {
+        if (!is.null(input[[paste0("decimal_sample_", col)]])) {
+          num.decimals <- as.numeric(input[[paste0("decimal_sample_", col)]])
+          df.sample[5:nrow(df.sample), col] <- as.character(format(round(as.numeric(df.sample[5:nrow(df.sample), col]), num.decimals), nsmall = num.decimals))
+        }
+      }
+      
+      # Combine headers and data rows
       combined.df.sample <- rbind(df.sample[1:4, ], rename.header.sample, df.sample[5:nrow(df.sample), ])
+      
       
       write.table(combined.df.sample, file, sep = "\t", col.names = FALSE, row.names = FALSE, quote = FALSE)
     })
-  
-  # UI to display the combined dataframe
-  output$dynamicInputs_event <- renderUI({
-    DTOutput("preview_sample")
-  })
   #----------------------------------------------------------------------------------------------
   
   ## Meta_timeline

@@ -7,7 +7,7 @@
 
 # Author: Pan, Wei-Chen
 # Created: 2024-06-14
-# Last Updated: 2024-07-29
+# Last Updated: 2024-07-31
 #----------------------------------------------------------------------------------------------------------
 library(shiny)
 library(shinydashboard)
@@ -130,8 +130,7 @@ ui <- dashboardPage(
                     uiOutput("dynamicInputs_patient")  # Dynamic inputs for long headers and type
                   ),
                   mainPanel(
-                    uiOutput("dynamicInputs_event"),
-                    div(style = 'overflow-x: auto; overflow-y: auto; height: 400px;', DTOutput("preview_patient"))  # Enable scrolling
+                    DTOutput("preview_patient")
                   )
                 ),
                 tags$style(HTML("
@@ -167,8 +166,7 @@ ui <- dashboardPage(
                     uiOutput("dynamicInputs_sample")   # Dynamic inputs for long headers and type
                   ),
                   mainPanel(
-                    uiOutput("dynamicInputs_event"),
-                    div(style = 'overflow-x: auto; overflow-y: auto; height: 400px;', DTOutput("preview_sample")) # Enable scrolling
+                    DTOutput("preview_sample")
                   )
                 ),
                 tags$style(HTML("

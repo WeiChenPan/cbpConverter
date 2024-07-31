@@ -1,11 +1,13 @@
 #-------------------------------------------------------------------------------------------------------------------
 ### App: cbpConverter
-# File name: cbp_app-v2.0.R
-# Version: 2.0
-# Description: This is a R shiny app created for converting excel (.xsls) to cBioportal main 7 input formats (.txt).
-#              And also convert timeline table from excel to txt format. 
+# File name: cbpConverter.R
+# Version: 3.0
+# Description: This is an R shiny app created for converting excel (.xsls) to cBioportal main 7 input formats (.txt).
+#              And also convert timeline table from excel (.xsls) to txt format. 
+#              * Additional function: in the sessions of data_clinical_patient and data_clinical_sample, the users can 
+#                                     adjust the decimal they want.
 #
-
+#
 ## Output: 
 # 1. meta_study.txt
 # 2. meta_cancer_type.txt
@@ -22,8 +24,8 @@
 # 2.ui.R, server.R
 
 # Author: Pan, Wei-Chen
-# Created: 2024-07-22
-#-------------------------------------------------------------------------------------------------------------------
+# Created: 2024-07-31
+#----------------------------------------------------------------------------------------------------------------------------
 library(shiny)
 
 # Source the UI and server code
