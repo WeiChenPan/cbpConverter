@@ -470,7 +470,7 @@ server <- function(input, output, session) {
       cancer_study_identifier = input$cancer_study_identifier,
       genetic_alteration_type = "CLINICAL",
       datatype = "TIMELINE",
-      meta_data_filename = input$meta_data_filename
+      data_filename = input$data_filename
     )
   })
   
@@ -480,7 +480,7 @@ server <- function(input, output, session) {
       paste0("cancer_study_identifier: ", data_meta_timeline$cancer_study_identifier),
       paste0("genetic_alteration_type: ", data_meta_timeline$genetic_alteration_type),
       paste0("datatype: ", data_meta_timeline$datatype),
-      paste0("meta_data_filename: ", data_meta_timeline$meta_data_filename),
+      paste0("data_filename: ", data_meta_timeline$data_filename),
       sep = "\n"
     )
   })
@@ -493,7 +493,7 @@ server <- function(input, output, session) {
         paste0("cancer_study_identifier: ", data_meta_timeline$cancer_study_identifier),
         paste0("genetic_alteration_type: ", data_meta_timeline$genetic_alteration_type),
         paste0("datatype: ", data_meta_timeline$datatype),
-        paste0("meta_data_filename: ", data_meta_timeline$meta_data_filename),
+        paste0("data_filename: ", data_meta_timeline$data_filename),
         sep = "\n"
       )
       writeLines(content_meta_timeline, file)
