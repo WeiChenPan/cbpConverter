@@ -145,7 +145,7 @@ server <- function(input, output, session) {
   })
   
   output$downloadBtn_meta_clinical_patient <- downloadHandler(
-    filename = function() { "meta_clicinal_patient.txt" },
+    filename = function() { "meta_clinical_patient.txt" },
     content = function(file) {
       data_meta_clinical_patient <- meta_clinical_patient()
       content_meta_clinical_patient <- paste(
@@ -182,7 +182,7 @@ server <- function(input, output, session) {
   })
   
   output$downloadBtn_meta_clinical_sample <- downloadHandler(
-    filename = function() { "meta_clicinal_sample.txt" },
+    filename = function() { "meta_clinical_sample.txt" },
     content = function(file) {
       data_meta_clinical_sample <- meta_clinical_sample()
       content_meta_clinical_sample <- paste(
