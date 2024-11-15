@@ -26,13 +26,12 @@ ui <- dashboardPage(
       menuItem(text = "data_clinical_patient", tabName = "data_clinical_patient", icon = icon("ghost")),
       menuItem(text = "data_clinical_sample", tabName = "data_clinical_sample", icon = icon("skull")),
       menuItem(text = "meta_timeline_xxx", tabName = "meta_timeline_xxx", icon = icon("clock")),
-      menuItem(text = "data_timeline_xxx", tabName = "data_timeline_xxx", icon = icon("poo"))
-      
+      menuItem(text = "data_timeline_xxx", tabName = "data_timeline_xxx", icon = icon("poo")),
+      menuItem(text = "cast_lists", tabName = "cast_lists", icon = icon("user"))
     )
   ),
   dashboardBody(
     tabItems(
-      
       ## Create meta_study.txt
       tabItem(tabName = "meta_study",
               h2("Create meta_study.txt"),
@@ -247,6 +246,28 @@ ui <- dashboardPage(
             }
           "))
           )
+      ),
+      
+      ## Create cast_list.txt
+      tabItem(tabName = "cast_lists",
+              h2("Create cast_list.txt"),
+              fluidPage(
+                sidebarLayout(
+                  sidebarPanel(
+                    textInput("cancer_study_identifier", "Cancer Study Identifier", value = ""),
+                    textInput("stable_id", "Stable ID", value = ""),
+                    textInput("cast_list_name", "Cast List Name", value = ""),
+                    textInput("cast_list_description", "Cast List Description", value = ""),
+                    fileInput("fileInput_cast", "Choose Excel File", accept = ".xlsx"),
+                    uiOutput("selectDeselectAll_sample"),  # Select or deselect all options
+                    uiOutput("columnSelector_cast"),
+                    downloadButton("downloadBtn_cast_list", "Download TXT File")
+                  ),
+                  mainPanel(
+                    verbatimTextOutput("preview_cast_list")  # Use verbatimTextOutput for formatted preview
+                  )
+                )
+              )
       )
     )
   )

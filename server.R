@@ -611,6 +611,56 @@ server <- function(input, output, session) {
     DTOutput("preview_timeline")
   })
   
+  #----------------------------------------------------------------------------------------------
+  
+  ## Cast_list
+  # Cast_list reactive function
+  cast_list <- reactive({
+    list(
+      cancer_study_identifier = input$cancer_study_identifier,
+      stable_id = input$stable_id,
+      name = input$name,
+      description = input$description
+    )
+  })
+  
+  output$preview_cast_list <- renderText({
+    data_cast_list <- cast_list()
+    paste(
+      paste0("cancer_study_identifier: ", data_cast_list$cancer_study_identifier),
+      paste0("stable_id: ", data_cast_list$stable_id),
+      paste0("name: ", data_cast_list$name),
+      paste0("description: ", data_cast_list$description),
+      sep = "\n"
+    )
+  })
+  
+  output$downloadBtn_cast_list <- downloadHandler(
+    filename = function() { "cast_list.txt" },
+    content = function(file) {
+      
+      # Define the directory and file path
+      dir_path <- "cast_lists"
+
+      # Check if the directory exists, if not, create it
+      if (!dir.exists(dir_path)) {
+        dir.create(dir_path)
+      }
+      
+      data_cast_list <- cast_list()
+      content_cast_list <- paste(
+        paste0("cancer_study_identifier: ", data_cast_list$cancer_study_identifier),
+        paste0("stable_id: ", data_cast_list$stable_id),
+        paste0("name: ", data_cast_list$name),
+        paste0("description: ", data_cast_list$description),
+        sep = "\n"
+      )
+      
+      # Write the file to the specified directory
+      writeLines(content_cast_list, file)
+    }
+  )
+  
 }
 
 # Return the server function
