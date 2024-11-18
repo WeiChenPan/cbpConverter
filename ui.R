@@ -27,7 +27,7 @@ ui <- dashboardPage(
       menuItem(text = "data_clinical_sample", tabName = "data_clinical_sample", icon = icon("skull")),
       menuItem(text = "meta_timeline_xxx", tabName = "meta_timeline_xxx", icon = icon("clock")),
       menuItem(text = "data_timeline_xxx", tabName = "data_timeline_xxx", icon = icon("poo")),
-      menuItem(text = "cast_lists", tabName = "cast_lists", icon = icon("user"))
+      menuItem(text = "case_lists", tabName = "case_lists", icon = icon("user"))
     )
   ),
   dashboardBody(
@@ -249,25 +249,25 @@ ui <- dashboardPage(
       ),
       
       ## Create cast_list.txt
-      tabItem(tabName = "cast_lists",
-              h2("Create cast_list.txt"),
+      tabItem(tabName = "case_lists",
+              h2("Create case_list.txt"),
               fluidPage(
                 sidebarLayout(
                   sidebarPanel(
+                    fileInput("fileInput_case", "Choose Excel File", accept = ".xlsx"),
                     textInput("cancer_study_identifier", "Cancer Study Identifier", value = ""),
                     textInput("stable_id", "Stable ID", value = ""),
-                    textInput("cast_list_name", "Cast List Name", value = ""),
-                    textInput("cast_list_description", "Cast List Description", value = ""),
-                    fileInput("fileInput_cast", "Choose Excel File", accept = ".xlsx"),
-                    uiOutput("selectDeselectAll_sample"),  # Select or deselect all options
-                    uiOutput("columnSelector_cast"),
-                    downloadButton("downloadBtn_cast_list", "Download TXT File")
+                    textInput("case_list_name", "Case List Name", value = ""),
+                    textInput("case_list_description", "Case List Description", value = ""),
+                    textInput("case_list_category", "Case List Category", value = "all_cases_in_study"),
+                    downloadButton("downloadBtn_case_list", "Download TXT File")
                   ),
                   mainPanel(
-                    verbatimTextOutput("preview_cast_list")  # Use verbatimTextOutput for formatted preview
+                    # verbatimTextOutput("preview_case_list")  # Use verbatimTextOutput for formatted preview
+                    uiOutput("preview_case_list") 
                   )
                 )
-              )
+            )
       )
     )
   )

@@ -613,55 +613,101 @@ server <- function(input, output, session) {
   
   #----------------------------------------------------------------------------------------------
   
-  ## Cast_list
-  # Cast_list reactive function
-  cast_list <- reactive({
+  ## Case_list
+  data_case <- reactive({
+    req(input$fileInput_case)  # Ensure file is uploaded
+    
+    # Read Excel file
+    df.c <- read_excel(input$fileInput_case$datapath, col_names = FALSE)
+    
+    # Remove the first 5 rows and first column
+    df.c <- df.c[-c(1:5), -1]
+    
+    # Subset the first column (Patient IDs)
+    case_ids <- df.c[[1]]  # Select first column
+    case_ids <- as.character(case_ids)  # Convert to character vector
+    
+    # Return processed patient IDs
+    case_ids
+  })
+  
+  # Reactive function to generate case_list
+  case_list <- reactive({
+    req(data_case())  # Ensure data is available
+    
     list(
       cancer_study_identifier = input$cancer_study_identifier,
       stable_id = input$stable_id,
-      name = input$name,
-      description = input$description
+      case_list_name = input$case_list_name,
+      case_list_description = input$case_list_description,
+      case_list_category = input$case_list_category,
+      case_list_ids = paste(data_case(), collapse = "\t")  # Tab-delimited patient IDs
     )
   })
   
-  output$preview_cast_list <- renderText({
-    data_cast_list <- cast_list()
-    paste(
-      paste0("cancer_study_identifier: ", data_cast_list$cancer_study_identifier),
-      paste0("stable_id: ", data_cast_list$stable_id),
-      paste0("name: ", data_cast_list$name),
-      paste0("description: ", data_cast_list$description),
-      sep = "\n"
+  
+  # Preview case_list as formatted text
+  output$preview_case_list <- renderUI({
+    # Placeholder content when no file is uploaded
+    if (is.null(input$fileInput_case)) {
+      return(tags$div(
+        style = "background-color: #f8f9fa; border: 1px solid #ddd; padding: 15px; border-radius: 5px;
+        font-family: sans-serif; font-size: 12px; line-height: 1.6;",
+        HTML("<span style='color: gray;'>Please upload a file and fill in the fields to preview the case list.</span>")
+      ))
+    }
+    
+    # Generate case list preview if the file has been processed
+    data_case_list <- case_list()
+    
+    # Styled background panel for the preview
+    tags$div(
+      style = "background-color: #f8f9fa; border: 1px solid #ddd; padding: 15px; border-radius: 5px;
+      font-family: sans-serif; font-size: 15px; line-height: 1.8;",
+      HTML(paste(
+        paste0("<b>cancer_study_identifier:</b> ", data_case_list$cancer_study_identifier),
+        paste0("<b>stable_id:</b> ", data_case_list$stable_id),
+        paste0("<b>case_list_name:</b> ", data_case_list$case_list_name),
+        paste0("<b>case_list_description:</b> ", data_case_list$case_list_description),
+        paste0("<b>case_list_category:</b> ", data_case_list$case_list_category),
+        paste0("<b>case_list_ids:</b> ", data_case_list$case_list_ids),
+        sep = "<br/>"
+      ))
     )
   })
   
-  output$downloadBtn_cast_list <- downloadHandler(
-    filename = function() { "cast_list.txt" },
-    content = function(file) {
-      
-      # Define the directory and file path
-      dir_path <- "cast_lists"
-
-      # Check if the directory exists, if not, create it
-      if (!dir.exists(dir_path)) {
-        dir.create(dir_path)
+  
+  # Download case_list.txt
+  output$downloadBtn_case_list <- downloadHandler(
+    
+    filename = function() {"case_list.txt"},    
+      content = function(file) {
+      # req(case_list())
+        
+    # Define the directory path
+    dir_path <- "case_lists"
+        
+    # Check if the directory exists; if not, create it
+    if (!dir.exists(dir_path)) {
+        dir.create(dir_path, recursive = TRUE)
       }
       
-      data_cast_list <- cast_list()
-      content_cast_list <- paste(
-        paste0("cancer_study_identifier: ", data_cast_list$cancer_study_identifier),
-        paste0("stable_id: ", data_cast_list$stable_id),
-        paste0("name: ", data_cast_list$name),
-        paste0("description: ", data_cast_list$description),
+      data_case_list <- case_list()
+      content_case_list <- paste(
+        paste0("cancer_study_identifier: ", data_case_list$cancer_study_identifier),
+        paste0("stable_id: ", data_case_list$stable_id),
+        paste0("case_list_name: ", data_case_list$case_list_name),
+        paste0("case_list_description: ", data_case_list$case_list_description),
+        paste0("case_list_category: ", data_case_list$case_list_category),
+        paste0("case_list_ids: ", data_case_list$case_list_ids),
         sep = "\n"
       )
       
-      # Write the file to the specified directory
-      writeLines(content_cast_list, file)
+      writeLines(content_case_list, file)
     }
   )
-  
 }
+
 
 # Return the server function
 shinyServer(server)
