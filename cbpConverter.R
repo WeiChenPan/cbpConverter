@@ -18,6 +18,7 @@
 # 7. data_clinical_sample.txt
 # 8. meta_timeline_xxx.txt
 # 9. data_timeline_xxx.txt
+# 10. case_lists/case_list.txt
 
 ## Requirements:
 # 1.Data&Codebook.xlsx
