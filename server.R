@@ -680,7 +680,7 @@ server <- function(input, output, session) {
   # Download case_list.txt
   output$downloadBtn_case_list <- downloadHandler(
     
-    filename = function() {"case_list.txt"},    
+    filename = function() {"cases_list.txt"},    
       content = function(file) {
       # req(case_list())
         
