@@ -8,7 +8,7 @@
 
 # Author: Pan, Wei-Chen
 # Created: 2024-06-14
-# Last Updated: 2024-11-19
+# Last Updated: 2024-11-21
 #------------------------------------------------------------------------------------------------
 library(shiny)
 library(shinydashboard)
@@ -612,6 +612,54 @@ server <- function(input, output, session) {
     DTOutput("preview_timeline")
   })
   
+  #----------------------------------------------------------------------------------------------
+  ## Meta_mutations
+  meta_mutations <- reactive({
+    list(
+      cancer_study_identifier = input$cancer_study_identifier,
+      genetic_alteration_type = "MUTATION_EXTENDED",
+      stable_id = "mutations",
+      datatype = "MAF",
+      show_profile_in_analysis_tab = "true",
+      profile_description = input$profile_description,
+      profile_name = "Mutations",
+      data_filename = "data_mutations.txt"
+    )
+  })
+  
+  output$preview_meta_mutations <- renderText({
+    data_meta_mutations <- meta_mutations()
+    paste(
+      paste0("cancer_study_identifier: ", data_meta_mutations$cancer_study_identifier),
+      paste0("genetic_alteration_type: ", data_meta_mutations$genetic_alteration_type),
+      paste0("stable_id: ", data_meta_mutations$stable_id),
+      paste0("datatype: ", data_meta_mutations$datatype),
+      paste0("show_profile_in_analysis_tab: ", data_meta_mutations$show_profile_in_analysis_tab),
+      paste0("profile_description: ", data_meta_mutations$profile_description),
+      paste0("profile_name: ", data_meta_mutations$profile_name),
+      paste0("data_filename: ", data_meta_mutations$data_filename),
+      sep = "\n"
+    )
+  })
+  
+  output$downloadBtn_meta_mutations <- downloadHandler(
+    filename = function() { "meta_mutations.txt" },
+    content = function(file) {
+      data_meta_mutations <- meta_mutations()
+      content_meta_mutations <- paste(
+        paste0("cancer_study_identifier: ", data_meta_mutations$cancer_study_identifier),
+        paste0("genetic_alteration_type: ", data_meta_mutations$genetic_alteration_type),
+        paste0("stable_id: ", data_meta_mutations$stable_id),
+        paste0("datatype: ", data_meta_mutations$datatype),
+        paste0("show_profile_in_analysis_tab: ", data_meta_mutations$show_profile_in_analysis_tab),
+        paste0("profile_description: ", data_meta_mutations$profile_description),
+        paste0("profile_name: ", data_meta_mutations$profile_name),
+        paste0("data_filename: ", data_meta_mutations$data_filename),
+        sep = "\n"
+      )
+      writeLines(content_meta_mutations, file)
+    }
+  )
   #----------------------------------------------------------------------------------------------
   
   ## Case_list

@@ -20,6 +20,8 @@
 # 8. meta_timeline_xxx.txt
 # 9. data_timeline_xxx.txt
 # 10. case_lists/cases_list.txt
+# 11. meta_mutations.txt
+# 12. data_mutations.txt (It's a fake data if just for upload clinical data)
 
 ## Requirements:
 # 1.Data&Codebook.xlsx
@@ -27,6 +29,7 @@
 
 # Author: Pan, Wei-Chen
 # Created: 2024-07-31
+# Last Updated: 2024-11-21
 #----------------------------------------------------------------------------------------------------------------------------
 library(shiny)
 

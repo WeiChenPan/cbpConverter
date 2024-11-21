@@ -8,7 +8,7 @@
 
 # Author: Pan, Wei-Chen
 # Created: 2024-06-14
-# Last Updated: 2024-11-19
+# Last Updated: 2024-11-21
 #----------------------------------------------------------------------------------------------------------
 library(shiny)
 library(shinydashboard)
@@ -28,6 +28,8 @@ ui <- dashboardPage(
       menuItem(text = "data_clinical_sample", tabName = "data_clinical_sample", icon = icon("skull")),
       menuItem(text = "meta_timeline_xxx", tabName = "meta_timeline_xxx", icon = icon("clock")),
       menuItem(text = "data_timeline_xxx", tabName = "data_timeline_xxx", icon = icon("poo")),
+      menuItem(text = "meta_mutations", tabName = "meta_mutations", icon = icon("eye")),
+      menuItem(text = "data_mutations", tabName = "data_mutations", icon = icon("fire")),
       menuItem(text = "case_lists", tabName = "case_lists", icon = icon("user"))
     )
   ),
@@ -247,6 +249,22 @@ ui <- dashboardPage(
             }
           "))
           )
+      ),
+      
+      ## Create meta_mutations.txt
+      tabItem(tabName = "meta_mutations", 
+              h2("Create meta_mutations.txt"),
+              fluidPage(
+                sidebarLayout(
+                  sidebarPanel(
+                    textInput("profile_description", "Profile Description", value = ""),
+                    downloadButton("downloadBtn_meta_mutations", "Download TXT File")
+                  ),
+                  mainPanel(
+                    verbatimTextOutput("preview_meta_mutations")
+                  )
+                )
+              )
       ),
       
       ## Create cast_list.txt
