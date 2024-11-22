@@ -12,8 +12,17 @@ Author: Pan, Wei-Chen
 7. data_clinical_sample.txt
 8. meta_timeline_xxx.txt
 9. data_timeline_xxx.txt
-10. case_lists/case_list.txt
+10. meta_mutations.txt
+11. data_mutations.txt (It's a fake data if just for upload clinical data)
+12. case_lists/case_list.txt
 
 
 ## Preparation
+* step 1: Update R to the latest version.
+* step 2: Install the required packages.
+```
+install.packages(c("shiny", "shinydashboard", "DT", "readxl"))
+```
+* step 3: Once the packages are installed, library them into your R session:
+
 ## Tutorial
