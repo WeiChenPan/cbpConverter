@@ -8,7 +8,7 @@
 
 # Author: Pan, Wei-Chen
 # Created: 2024-06-14
-# Last Updated: 2024-11-21
+# Last Updated: 2024-11-27
 #------------------------------------------------------------------------------------------------
 library(shiny)
 library(shinydashboard)
@@ -613,6 +613,7 @@ server <- function(input, output, session) {
   })
   
   #----------------------------------------------------------------------------------------------
+  
   ## Meta_mutations
   meta_mutations <- reactive({
     list(
@@ -658,6 +659,72 @@ server <- function(input, output, session) {
         sep = "\n"
       )
       writeLines(content_meta_mutations, file)
+    }
+  )
+  #----------------------------------------------------------------------------------------------
+  
+  ## Data_mutations
+  data_mutations <- data.frame(
+    Hugo_Symbol = "CACNA1H",
+    Entrez_Gene_Id = 0,
+    Center = "John_Hopkins",
+    NCBI_Build = "GRCh37",
+    Chromosome = 16,
+    Start_Position = 1248690,
+    End_Position = 1248692,
+    Strand = "+",
+    Consequence = "inframe_deletion",
+    Variant_Classification = "In_Frame_Del",
+    Variant_Type = "DEL",
+    Reference_Allele = "TCT",
+    Tumor_Seq_Allele1 = "TCT",
+    Tumor_Seq_Allele2 = "-",
+    dbSNP_RS = "NA",
+    dbSNP_Val_Status = "NA",
+    Tumor_Sample_Barcode = 4112,
+    Matched_Norm_Sample_Barcode = "NA",
+    dbSNP_Val_RS = "NA",
+    dbSNP_Val_Statu = "NA",
+    Match_Norm_Seq_Allele1 = "NA",
+    Match_Norm_Seq_Allele2 = "NA",
+    Tumor_Validation_Allele1 = "NA",
+    Tumor_Validation_Allele2 = "NA",
+    Match_Norm_Validation_Allele1 = "NA",
+    Match_Norm_Validation_Allele2 = "NA",
+    Verification_Status = "NA",
+    Validation_Status = "NA",
+    Mutation_Status = "NA",
+    Sequencing_Phase = "NA",
+    Sequence_Source = "NA",
+    Validation_Method = "NA",
+    Score = "NA",
+    BAM_File = "NA",
+    Sequencer = "Illumina HiSeq",
+    t_ref_count = ".",	
+    t_alt_count = ".",
+    n_ref_count = ".",
+    n_alt_count = ".",
+    HGVSc = "ENST00000348261.5:c.724_726del",
+    HGVSp = "p.Phe242del",
+    HGVSp_Short = "p.F242del",
+    Transcript_ID = "ENST00000348261",
+    RefSeq = "NM_021098.2",
+    Protein_position = 240,
+    Codons = "gTCTtc/gtc",
+    Hotspot = 0,
+    n_depth = 0,
+    t_depth = 0,
+    stringsAsFactors = FALSE
+  )
+  
+  output$preview_data_mutations <- renderDT({
+    datatable(data_mutations, options = list(pageLength = 10, scrollX = TRUE))
+  })
+  
+  output$downloadBtn_data_mutations <- downloadHandler(
+    filename = function() { "data_mutations.txt" },
+    content = function(file) {
+      write.table(data_mutations, file, sep = "\t", row.names = FALSE, quote = FALSE)
     }
   )
   #----------------------------------------------------------------------------------------------

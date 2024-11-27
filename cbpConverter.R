@@ -6,7 +6,7 @@
 # Description: This is an R shiny app created for converting excel (.xsls) to cBioportal main 7 input formats (.txt).
 #              And also convert timeline table from excel (.xsls) to txt format. 
 #              * Additional function: in the sessions of data_clinical_patient and data_clinical_sample, the users can 
-#                                     adjust the decimal they want.
+#                adjust the decimal they want.
 #
 #
 ## Output: 
@@ -19,9 +19,9 @@
 # 7. data_clinical_sample.txt
 # 8. meta_timeline_xxx.txt
 # 9. data_timeline_xxx.txt
-# 10. case_lists/cases_list.txt
+# 10. case_lists/ases_list.txt
 # 11. meta_mutations.txt
-# 12. data_mutations.txt (It's a fake data if just for upload clinical data)
+# 12. data_mutations.txt (This is a fake data because it's just for upload clinical data)
 
 ## Requirements:
 # 1.Data&Codebook.xlsx
@@ -29,7 +29,7 @@
 
 # Author: Pan, Wei-Chen
 # Created: 2024-07-31
-# Last Updated: 2024-11-21
+# Last Updated: 2024-11-27
 #----------------------------------------------------------------------------------------------------------------------------
 library(shiny)
 

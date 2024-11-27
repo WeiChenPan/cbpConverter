@@ -8,7 +8,7 @@
 
 # Author: Pan, Wei-Chen
 # Created: 2024-06-14
-# Last Updated: 2024-11-21
+# Last Updated: 2024-11-27
 #----------------------------------------------------------------------------------------------------------
 library(shiny)
 library(shinydashboard)
@@ -30,7 +30,7 @@ ui <- dashboardPage(
       menuItem(text = "data_timeline_xxx", tabName = "data_timeline_xxx", icon = icon("poo")),
       menuItem(text = "meta_mutations", tabName = "meta_mutations", icon = icon("eye")),
       menuItem(text = "data_mutations", tabName = "data_mutations", icon = icon("fire")),
-      menuItem(text = "case_lists", tabName = "case_lists", icon = icon("user"))
+      menuItem(text = "cases_list", tabName = "cases_list", icon = icon("user"))
     )
   ),
   dashboardBody(
@@ -267,22 +267,37 @@ ui <- dashboardPage(
               )
       ),
       
+      ## Create data_mutations.txt
+      tabItem(tabName = "data_mutations", 
+              h2("Create data_mutations.txt"),
+              fluidPage(
+                sidebarLayout(
+                  sidebarPanel(
+                    downloadButton("downloadBtn_data_mutations", "Download TXT File")
+                  ),
+                  mainPanel(
+                    DTOutput("preview_data_mutations")
+                  )
+                )
+              )
+      ),
+      
       ## Create cast_list.txt
-      tabItem(tabName = "case_lists",
-              h2("Create case_list.txt"),
+      tabItem(tabName = "cases_list",
+              h2("Create cases_list.txt"),
               fluidPage(
                 sidebarLayout(
                   sidebarPanel(
                     fileInput("fileInput_case", "Choose Excel File", accept = ".xlsx"),
                     textInput("cancer_study_identifier", "Cancer Study Identifier", value = ""),
                     textInput("stable_id", "Stable ID", value = ""),
+                    p(style = "color: red", "*Be sure to add '_sequenced' aftter your stable_id !"),
                     textInput("case_list_name", "Case List Name", value = ""),
                     textInput("case_list_description", "Case List Description", value = ""),
                     textInput("case_list_category", "Case List Category", value = "all_cases_in_study"),
                     downloadButton("downloadBtn_case_list", "Download TXT File")
                   ),
                   mainPanel(
-                    # verbatimTextOutput("preview_case_list")  # Use verbatimTextOutput for formatted preview
                     uiOutput("preview_case_list") 
                   )
                 )
