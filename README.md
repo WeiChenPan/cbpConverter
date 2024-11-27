@@ -2,7 +2,7 @@
 
 Author: Pan, Wei-Chen
 
-##### This is a R shiny app that was created to convert Excel (.xsls) to cBioportal main 12 input formats (.txt) for clinical data.
+##### This is an R shiny app that was created to convert Excel (.xsls) to cBioportal main 12 input formats (.txt) for clinical data.
 1. meta_study.txt
 2. meta_cancer_type.txt               
 3. cancer_type.txt                    
