@@ -2,7 +2,7 @@
 # This R shiny is for the cbioportal v6.0
 ### App: cbpConverter
 # File name: server.R
-# Version: 3.0
+# Version: 3.1
 # Description: create the shiny application server.
 
 

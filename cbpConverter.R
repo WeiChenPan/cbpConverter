@@ -2,7 +2,7 @@
 # This R shiny is for the cbioportal v6.0
 ## App: cbpConverter
 # File name: cbpConverter.R
-# Version: 3.0
+# Version: 3.1
 # Description: This is an R shiny app created for converting excel (.xsls) to cBioportal main 7 input formats (.txt).
 #              And also convert timeline table from excel (.xsls) to txt format. 
 #              * Additional function: in the sessions of data_clinical_patient and data_clinical_sample, the users can 
