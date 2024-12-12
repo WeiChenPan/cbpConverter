@@ -23,6 +23,6 @@ Author: Pan, Wei-Chen
 ```
 install.packages(c("shiny", "shinydashboard", "DT", "readxl"))
 ```
-* step 3: Once the packages are installed, library them into your R session:
+* step 3: Once the packages are installed, library them into your R session.
 
 ## Tutorial
