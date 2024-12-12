@@ -1,6 +1,7 @@
 # cbpConverter
 
 Author: Pan, Wei-Chen
+Institution: AsiaMedCom
 
 ##### This is an R shiny app that was created to convert Excel (.xsls) to cBioportal main 12 input formats (.txt) for clinical data.
 1. meta_study.txt
