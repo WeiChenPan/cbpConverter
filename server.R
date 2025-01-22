@@ -16,7 +16,6 @@ library(DT)
 library(readxl)
 
 server <- function(input, output, session) {
-  
   ## Meta_study
   meta_study <- reactive({
     list(
@@ -797,16 +796,19 @@ server <- function(input, output, session) {
   output$downloadBtn_case_list <- downloadHandler(
     
     filename = function() {"cases_list.txt"},    
-      content = function(file) {
-      # req(case_list())
+    content = function(file) {
+
+      
+      # Define the directory path using `here`
+      dir_path <- "case_lists"
         
-    # Define the directory path
-    dir_path <- "case_lists"
-        
-    # Check if the directory exists; if not, create it
-    if (!dir.exists(dir_path)) {
-        dir.create(dir_path, recursive = TRUE)
-      }
+      # Check if the directory exists; if not, create it
+      if (!dir.exists(dir_path)) {
+          dir.create(dir_path, recursive = TRUE)
+        }
+      
+      # Build the file path within the directory
+      file_path <- file.path(dir_path, "cases_list.txt")  
       
       data_case_list <- case_list()
       content_case_list <- paste(
@@ -819,7 +821,7 @@ server <- function(input, output, session) {
         sep = "\n"
       )
       
-      writeLines(content_case_list, file)
+      writeLines(content_case_list, file_path)
     }
   )
 }
