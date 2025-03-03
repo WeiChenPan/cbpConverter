@@ -7,12 +7,16 @@
 
 # Author: Pan, Wei-Chen
 # Created: 2024-06-14
-# Last Updated: 2024-07-31
+# Last Updated: 2025-03-03
 #------------------------------------------------------------------------------------------------
 library(shiny)
 library(shinydashboard)
 library(DT)
 library(readxl)
+
+
+# Increase max upload size to 50MB
+options(shiny.maxRequestSize = 50 * 1024^2)
 
 server <- function(input, output, session) {
   
